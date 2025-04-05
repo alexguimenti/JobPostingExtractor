@@ -1,0 +1,82 @@
+job_research_task:
+  description: >
+    Analyze the job posting at {job_url} and create a detailed report about the requirements,
+    responsibilities, and company culture. Make sure to identify and extract the company name
+    from the job posting. Focus on key technical skills, experience requirements, and any
+    unique aspects of the role that would be important for tailoring a resume.
+  expected_output: >
+    A comprehensive analysis of the job posting including:
+    1. Company name and brief description
+    2. Technical skills required
+    3. Experience requirements
+    4. Company culture and values
+    5. Key responsibilities
+    6. Any unique or standout requirements
+  agent: job_researcher
+
+profile_task:
+  description: >
+    Analyze the professional profile in full_profile.md and create a detailed report
+    highlighting key skills, experiences, and achievements that could be relevant
+    for the job researched.
+  expected_output: >
+    A detailed analysis of the professional profile including:
+    1. Key technical skills and proficiency levels
+    2. Notable projects and achievements
+    3. Areas of expertise
+    4. Professional experience highlights
+    5. Educational background and certifications
+  agent: profiler
+
+resume_strategy_task:
+  description: >
+    Using the professional profile and job requirements from previous tasks, tailor the resume found in original_resume.md
+    to highlight the most relevant experiences and qualifications according to the full profile on the file `full_profile.md`. 
+    Follow all formatting and content rules defined in resume_guide.md. 
+    Use available tools to enhance each section of the resume, ensuring it is highly aligned with the target job posting.
+
+    Do not invent or fabricate any information. Instead, refine and reorganize existing content to strengthen its relevance and clarity.
+
+    Use the structure and sections of original_resume.md as the base. Adapt the resume to better match the job posting requirements 
+    by emphasizing parts of the existing profile that are most aligned with the target role.
+
+    Specific instructions:
+    - The resume must follow the same language as the job posting.
+    - Keep the personal and contact information (name, email, phone, LinkedIn, location, etc.) exactly as written in `original_resume.md`.
+    - Update all other sections: professional summary, work experience, skills, education, and certifications.
+    - In the Certifications section, include only certifications relevant to the job posting and begin with the sentence:  
+      "_Selected certifications from a portfolio of 40+ relevant courses:_".  
+      To choose the most appropriate certifications, refer to the list provided in `full_profile.md` and select those that best match the job description.
+    - In the Education section, keep the sentence: "*Recognized as the top university in Latin America*"
+    - Ensure that no invalid or corrupted characters appear (e.g., avoid "SÃ£o", "â€“", etc.). All text must be properly encoded in UTF-8.
+    - Do not change or remove the original structure from original_resume.md, but feel free to change the content in order to match the job's requirement
+    - Do not add fictional experiences, qualifications, or achievements. Only use what is verifiable from the candidate's profile.
+
+  expected_output: >
+    A polished and job-targeted resume in clear, properly encoded text (UTF-8), 
+    showcasing the candidate's most relevant qualifications and experiences aligned with the job posting.
+  agent: resume_strategist
+
+cover_letter_strategy_task:
+  description: >
+    Using the professional profile and job requirements from previous tasks, tailor the cover letter found in original_cover_letter.md 
+    to emphasize the candidate's most relevant strengths, motivations, and experiences. Follow all structure, tone, and content rules 
+    defined in cover_letter_guide.md. Use original_cover_letter.md as the structural base, maintaining the general flow and logic 
+    while adapting the content to better reflect the alignment with the job opportunity.
+
+    Do not fabricate or invent any information. Only use true, verifiable experiences and motivations from the candidate’s actual profile.
+
+    Specific instructions:
+    - The cover letter must follow the same language as the job posting.
+    - Rephrase, reorganize, or enrich existing content to improve clarity, flow, and relevance to the job description.
+    - Maintain a professional yet personable tone as recommended in cover_letter_guide.md.
+    - Ensure the letter remains concise, ideally no longer than one page.
+    - Personalize the letter to the specific job and company, referencing aspects of the role or organization when appropriate.
+    - Ensure UTF-8 encoding throughout the text to prevent issues with special characters (e.g., avoid "SÃ£o", "â€“", etc.).
+    - Preserve the core structure and paragraph logic of original_cover_letter.md while making all necessary refinements for alignment.
+    - **Remove all placeholders for which no real value is available** (e.g., [Hiring Manager's Name], [Title], [Company Address], etc.). Do not leave any unresolved or template-like content in the final version—omit such sections gracefully if the data is missing.
+
+  expected_output: >
+    A polished and job-targeted cover letter in clear, properly encoded text (UTF-8), 
+    highlighting the candidate’s strongest qualifications and motivations in alignment with the job posting.
+  agent: cover_letter_strategist

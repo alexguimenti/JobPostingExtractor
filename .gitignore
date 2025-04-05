@@ -1,0 +1,10 @@
+.env
+__pycache__/
+.DS_Store
+cover_letter.md
+full_profile.md
+job_research.md
+original_cover_letter.md
+original_resume.md
+profile.md
+resume.md
