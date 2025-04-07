@@ -75,8 +75,41 @@ cover_letter_strategy_task:
     - Ensure UTF-8 encoding throughout the text to prevent issues with special characters (e.g., avoid "SÃ£o", "â€“", etc.).
     - Preserve the core structure and paragraph logic of original_cover_letter.md while making all necessary refinements for alignment.
     - **Remove all placeholders for which no real value is available** (e.g., [Hiring Manager's Name], [Title], [Company Address], etc.). Do not leave any unresolved or template-like content in the final version—omit such sections gracefully if the data is missing.
+    - **Always include a strategically worded mention of the candidate's current location in Brazil and their active interest in relocation to Europe.** This mention should not only reflect personal motivation but also emphasize how the candidate’s international experience (e.g., LATAM, US) brings added value to the company. For example:
 
+      "Currently based in Brazil, I am actively seeking relocation opportunities to Europe. Beyond a personal desire to immerse myself in new cultural and professional environments, I believe this transition represents an opportunity for companies like [Company Name] to gain a global perspective from someone experienced in large-scale, data-driven operations across LATAM and the US. I'm eager to bring this international outlook, along with a collaborative mindset and a strong execution focus, to help your team scale with intention and impact."
+
+    - The phrasing should be adapted to suit the job’s tone and context, but the core idea must be retained.
+  
   expected_output: >
     A polished and job-targeted cover letter in clear, properly encoded text (UTF-8), 
-    highlighting the candidate’s strongest qualifications and motivations in alignment with the job posting.
+    highlighting the candidate’s strongest qualifications and motivations in alignment with the job posting, 
+    and including a thoughtful, value-driven mention of the candidate’s current location in Brazil and interest in relocating to Europe.
+
   agent: cover_letter_strategist
+
+compensation_analysis_task:
+  description: >
+    Based on the company and location information (including country and city when available), determine a realistic and well-informed total compensation range 
+    for a Product Manager role. Use publicly available salary benchmarks and industry averages to inform your response. Prioritize data that aligns with the 
+    company type (e.g., startup, scale-up, enterprise) and region (e.g., Germany vs. Portugal, or Berlin vs. Munich). 
+
+    If city-level data is unavailable, use the country average and mention that clearly. If company size or industry is known, adjust the estimate accordingly 
+    to reflect what is typical for similar organizations in that region.
+
+    Specific instructions:
+    - Present the result as a total annual compensation range in euros (EUR).
+    - Keep the explanation minimal and avoid excessive details about the company or market context.
+    - Use this output template:
+
+      "Based on my research and the responsibilities of the role, I believe a fair salary range would be between €[lower bound] and €[upper bound] per year.
+
+      That said, I’m flexible and open to discussing this further depending on the full compensation package, responsibilities, and opportunities for growth. 
+      My main goal is to find a role where I can bring value to the team and continue developing professionally."
+
+  expected_output: >
+    A short and well-formatted compensation expectation message using the template provided above. The salary range should be tailored to the job’s location 
+    and company context, but without unnecessary elaboration. The tone should be confident, professional, and open to negotiation.
+
+  agent: compensation_analyst
+

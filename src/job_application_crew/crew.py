@@ -74,6 +74,14 @@ class JobApplicationCrew():
             tools=[read_cover_letter, read_cover_letter_guide],
             verbose=True
         )
+    
+    @agent
+    def compensation_analyst(self) -> Agent:
+        return Agent(
+            config=self.agents_config['compensation_analyst'],
+            tools=[search_tool, scrape_tool],
+            verbose=True
+        )
 
     # @agent
     # def reporting_analyst(self) -> Agent:
@@ -125,6 +133,14 @@ class JobApplicationCrew():
         return Task(
             config=self.tasks_config['cover_letter_strategy_task'],
             output_file='cover_letter.md',
+            #depends_on=['profile_task'] 
+        )
+    
+    @task
+    def compensation_analysis_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['compensation_analysis_task'],
+            output_file='salary.md',
             #depends_on=['profile_task'] 
         )
     
