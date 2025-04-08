@@ -48,7 +48,8 @@ resume_strategy_task:
     - Focus on highlighting the candidate’s most relevant experiences according to the job details in `job_research.md`.
     - In the Skills section, reorganize and adapt the list to emphasize skills that directly match the job description.
       Use only real skills from the profile in `full_profile.md`.
-    - In the Certifications section, include only certifications related to the job posting, choose from the full certifications list on `full_profile.md`. Begin the section with:
+    - In the Certifications section, include **between 5 and 10 certifications** that are most relevant to the job posting, 
+      selected from the complete list in `full_profile.md`. Begin the section with:
       "_Selected certifications from a portfolio of 40+ relevant courses (full courses list on LinkedIn profile):_"
     - In the Education section, include the sentence: "*Recognized as the top university in Latin America*"
     - Ensure proper UTF-8 encoding. Do not include broken characters (e.g., "SÃ£o", "â€“", etc.).
@@ -60,6 +61,7 @@ resume_strategy_task:
     and maximizing alignment with the target role in `job_research.md`, while remaining truthful to the candidate’s verified experience.
 
   agent: resume_strategist
+
 
 cover_letter_strategy_task:
   description: >
