@@ -30,31 +30,35 @@ profile_task:
 
 resume_strategy_task:
   description: >
-    Using the professional profile and job requirements from previous tasks, tailor the resume found in original_resume.md
-    to highlight the most relevant experiences and qualifications according to the full profile on the file `full_profile.md`. 
-    Follow all formatting and content rules defined in resume_guide.md. 
-    Use available tools to enhance each section of the resume, ensuring it is highly aligned with the target job posting.
+    Tailor the resume from `original_resume.md` to match the target job opportunity described in `job_research.md`, 
+    using the candidate's full professional profile found in `full_profile.md`. 
+    Ensure the result strictly follows the formatting and writing guidelines defined in `resume_guide.md`.
 
-    Do not invent or fabricate any information. Instead, refine and reorganize existing content to strengthen its relevance and clarity.
+    The goal is to refine, reorganize, and adapt existing content in the resume to emphasize experiences, 
+    qualifications, and skills that are most relevant to the job posting — without adding or fabricating 
+    information that does not exist in the candidate’s history.
 
-    Use the structure and sections of original_resume.md as the base. Adapt the resume to better match the job posting requirements 
-    by emphasizing parts of the existing profile that are most aligned with the target role.
+    Use the structure and sections from `original_resume.md` as the base, keeping the overall layout and format unchanged.
+    However, update the content within each section to better align with the requirements and responsibilities in the job description.
 
     Specific instructions:
-    - The resume must follow the same language as the job posting.
-    - Keep the personal and contact information (name, email, phone, LinkedIn, location, etc.) exactly as written in `original_resume.md`.
-    - Update all other sections: professional summary, work experience, skills, education, and certifications.
-    - In the Certifications section, include only certifications relevant to the job posting and begin with the sentence:  
-      "_Selected certifications from a portfolio of 40+ relevant courses:_".  
-      To choose the most appropriate certifications, refer to the list provided in `full_profile.md` and select those that best match the job description.
-    - In the Education section, keep the sentence: "*Recognized as the top university in Latin America*"
-    - Ensure that no invalid or corrupted characters appear (e.g., avoid "SÃ£o", "â€“", etc.). All text must be properly encoded in UTF-8.
-    - Do not change or remove the original structure from original_resume.md, but feel free to change the content in order to match the job's requirement
-    - Do not add fictional experiences, qualifications, or achievements. Only use what is verifiable from the candidate's profile.
+    - Use the same language as the job posting (e.g., English or Spanish).
+    - Personal and contact information (name, email, phone, LinkedIn, location) must remain **exactly** as written in `original_resume.md`.
+    - Update all other sections — professional summary, work experience, skills, education, and certifications — using verified information only.
+    - Focus on highlighting the candidate’s most relevant experiences according to the job details in `job_research.md`.
+    - In the Skills section, reorganize and adapt the list to emphasize skills that directly match the job description.
+      Use only real skills from the profile in `full_profile.md`.
+    - In the Certifications section, include only certifications related to the job posting, choose from the full certifications list on `full_profile.md`. Begin the section with:
+      "_Selected certifications from a portfolio of 40+ relevant courses (full courses list on LinkedIn profile):_"
+    - In the Education section, include the sentence: "*Recognized as the top university in Latin America*"
+    - Ensure proper UTF-8 encoding. Do not include broken characters (e.g., "SÃ£o", "â€“", etc.).
+    - Do not alter or remove any sections from `original_resume.md`; only modify the content within them.
+    - Do **not** add fictional experiences, roles, achievements, or qualifications.
 
   expected_output: >
-    A polished and job-targeted resume in clear, properly encoded text (UTF-8), 
-    showcasing the candidate's most relevant qualifications and experiences aligned with the job posting.
+    A clean, well-formatted, and job-specific resume in UTF-8 text, showcasing the candidate's relevant qualifications 
+    and maximizing alignment with the target role in `job_research.md`, while remaining truthful to the candidate’s verified experience.
+
   agent: resume_strategist
 
 cover_letter_strategy_task:
