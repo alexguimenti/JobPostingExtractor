@@ -115,7 +115,7 @@ class BackupMarkdownFilesTool(BaseTool):
         result_message = f"All .md files have been successfully copied to '{destination}'."
 
         # Files to delete after successful copy
-        files_to_delete = ["resume.md", "cover_letter.md", "job_research.md", "profile.md", "salary.md"]
+        files_to_delete = ["resume.md", "cover_letter.md", "job_research.md", "profile.md", "salary.md", "final_review.md"]
 
         for file_to_delete in files_to_delete:
             if file_to_delete in copied_files:

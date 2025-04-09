@@ -23,7 +23,7 @@ def run():
     Run the crew.
     """
     inputs = {
-        'job_url': 'https://www.linkedin.com/jobs/view/4202826504'
+        'job_url': 'https://www.linkedin.com/jobs/view/4104765323'
     }
     
     try:

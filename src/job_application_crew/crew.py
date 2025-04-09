@@ -1,5 +1,7 @@
 from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
+from crewai.memory import ShortTermMemory
+from crewai.memory.storage.rag_storage import RAGStorage
 
 
 from crewai_tools import (
@@ -44,10 +46,11 @@ class JobApplicationCrew():
     #     )
 
     @agent
-    def job_researcher(self) -> Agent:
+    def researcher(self) -> Agent:
         return Agent(
-            config=self.agents_config['job_researcher'],
+            config=self.agents_config['researcher'],
             tools=[search_tool, scrape_tool],
+            allow_delegation=True,
             verbose=True
         )
 
@@ -56,6 +59,7 @@ class JobApplicationCrew():
         return Agent(
             config=self.agents_config['profiler'],
             tools=[search_tool, scrape_tool, read_full_profile],
+            allow_delegation=True,
             verbose=True,
         )
     
@@ -64,14 +68,16 @@ class JobApplicationCrew():
         return Agent(
             config=self.agents_config['resume_strategist'],
             tools=[read_resume, read_resume_guide],
+            allow_delegation=True,
             verbose=True
         )
 
     @agent
-    def cover_letter_strategist(self) -> Agent:
+    def cover_strategist(self) -> Agent:
         return Agent(
-            config=self.agents_config['cover_letter_strategist'],
+            config=self.agents_config['cover_strategist'],
             tools=[read_cover_letter, read_cover_letter_guide],
+            allow_delegation=True,
             verbose=True
         )
     
@@ -80,9 +86,18 @@ class JobApplicationCrew():
         return Agent(
             config=self.agents_config['compensation_analyst'],
             tools=[search_tool, scrape_tool],
+            allow_delegation=True,
             verbose=True
         )
 
+    @agent
+    def reviewer(self) -> Agent:
+        return Agent(
+            config=self.agents_config['reviewer'],
+            tools=[search_tool, scrape_tool, read_cover_letter, read_cover_letter_guide, read_resume, read_resume_guide],
+            allow_delegation=True,
+            verbose=True
+        )
     # @agent
     # def reporting_analyst(self) -> Agent:
     #     return Agent(
@@ -144,6 +159,29 @@ class JobApplicationCrew():
             #depends_on=['profile_task'] 
         )
     
+    @task
+    def profile_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['profile_task'],
+            #depends_on=['job_research_task'],
+            output_file='profile.md'
+        )
+    
+    @task
+    def final_review_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['final_review_task'],
+            output_file='final_review.md',
+            # depends_on=[
+            #     'job_research_task',
+            #     'profile_task',
+            #     'resume_strategy_task',
+            #     'cover_letter_strategy_task',
+            #     'compensation_analysis_task'
+            # ]
+        )
+
+    
     @crew
     def crew(self) -> Crew:
         """Creates the JobApplicationCrew crew"""
@@ -156,5 +194,18 @@ class JobApplicationCrew():
             process=Process.sequential,
             manager_llm=manager_llm,
             verbose=True,
+            memory=True,
+            short_term_memory=ShortTermMemory(
+            storage=RAGStorage(
+                embedder_config={
+                    "provider": "openai",
+                    "config": {
+                        "model": 'text-embedding-3-small'
+                    }
+                },
+                type="short_term",
+                path="/my_crew1/"
+            )
+        ),
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )

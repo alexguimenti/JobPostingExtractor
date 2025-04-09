@@ -12,7 +12,7 @@ job_research_task:
     4. Company culture and values
     5. Key responsibilities
     6. Any unique or standout requirements
-  agent: job_researcher
+  agent: researcher
 
 profile_task:
   description: >
@@ -92,7 +92,7 @@ cover_letter_strategy_task:
     highlighting the candidate’s strongest qualifications and motivations in alignment with the job posting, 
     and including a thoughtful, value-driven mention of the candidate’s current location in Brazil and interest in relocating to Europe.
 
-  agent: cover_letter_strategist
+  agent: cover_strategist
 
 compensation_analysis_task:
   description: >
@@ -119,3 +119,30 @@ compensation_analysis_task:
 
   agent: compensation_analyst
 
+final_review_task:
+  description: >
+    Review all components of the job application — including the job analysis (`job_research.md`), 
+    candidate profile (`full_profile.md`), tailored resume (`final_resume.md`), and customized cover letter (`final_cover_letter.md`) — 
+    to ensure they are fully aligned with one another and with the job posting.
+
+    Your task is to act as the final checkpoint before submission. Check that:
+    - The resume and cover letter reflect the key requirements and language of the job posting.
+    - The candidate’s strengths are consistently highlighted across documents.
+    - The tone, formatting, and structure match professional standards.
+    - The documents feel cohesive and strategic when read together.
+    - The resume follows the formatting guide (`resume_guide.md`) and the cover letter adheres to the rules in (`cover_letter_guide.md`).
+    - All UTF-8 encoding issues have been avoided (no broken characters).
+    - The relocation message is present in the cover letter, well-phrased, and adds strategic value.
+    - There are no inconsistencies or contradictions between documents.
+
+    Provide:
+    1. A list of any issues or misalignments found across documents.
+    2. Suggestions for improvement or minor refinements, if any.
+    3. A final verdict: "Ready to Submit" or "Needs Revisions", with a short justification.
+
+  expected_output: >
+    A structured and actionable final review including:
+    - Observed issues or inconsistencies (if any)
+    - Suggested improvements
+    - Final verdict with explanation
+  agent: reviewer
