@@ -1,50 +1,55 @@
 #!/usr/bin/env python
+import os
 import sys
 import warnings
-import os
-
 from datetime import datetime
 
 from job_application_crew.crew import JobApplicationCrew
-from job_application_crew.tools.custom_tool import BackupMarkdownFilesTool
-from job_application_crew.tools.custom_tool import ConvertMarkdownToHTMLTool
+from job_application_crew.tools.custom_tool import (
+    BackupMarkdownFilesTool,
+    ConvertMarkdownToHTMLTool
+)
 
+# Suppress specific warnings
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
-
-# This main file is intended to be a way for you to run your
-# crew locally, so refrain from adding unnecessary logic into this file.
-# Replace with inputs you want to test with, it will automatically
-# interpolate any tasks and agents information
+# Constants
+RESUME_MD_PATH = "resume.md"
+RESUME_HTML_PATH = "resume.html"
 
 def run():
     """
-    Run the crew.
+    Execute the CrewAI pipeline for job application automation.
+    This function will:
+    1. Run the Crew.
+    2. Convert the generated resume.md to HTML.
+    3. Backup all generated markdown and HTML files.
     """
-    # job_url = input("🔗 Paste job URL (ex: LinkedIn): ").strip()
 
     inputs = {
         'job_url': 'https://www.happening.xyz/careers/4572033101'
     }
 
+    crew = JobApplicationCrew()
     html_tool = ConvertMarkdownToHTMLTool()
-    markdown_content = html_tool.read_markdown_file("resume.md")
+    backup_tool = BackupMarkdownFilesTool()
 
     try:
-        JobApplicationCrew().crew().kickoff(inputs=inputs)
-        resume_path = "resume.md"
+        print("Running Crew...")
+        #crew.crew().kickoff(inputs=inputs)
 
-        if markdown_content:
-            try:
-                html_tool.convert_and_save("resume.md", "resume.html")
-
-            except Exception as e:
-                print(f"Error while processing '{resume_path}': {e}")
+        if os.path.exists(RESUME_MD_PATH):
+            print(f"Generating HTML from {RESUME_MD_PATH}...")
+            html_tool.convert_and_save(RESUME_MD_PATH, RESUME_HTML_PATH)
         else:
-            print(f"Warning: The file '{resume_path}' was not found.")
+            print(f"Warning: The file '{RESUME_MD_PATH}' was not found. Skipping HTML generation.")
+
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
-    # Use the backup tool
-    backup_tool = BackupMarkdownFilesTool()
-    backup_tool.run()
+    print("Running Backup...")
+    #backup_tool.run()
+
+
+if __name__ == "__main__":
+    run()
