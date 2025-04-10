@@ -2,13 +2,12 @@
 import sys
 import warnings
 import os
-import shutil
-import re
 
 from datetime import datetime
 
 from job_application_crew.crew import JobApplicationCrew
 from job_application_crew.tools.custom_tool import BackupMarkdownFilesTool
+from job_application_crew.tools.custom_tool import ConvertMarkdownToHTMLTool
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -22,60 +21,30 @@ def run():
     """
     Run the crew.
     """
+    # job_url = input("🔗 Paste job URL (ex: LinkedIn): ").strip()
+
     inputs = {
-        'job_url': 'https://www.linkedin.com/jobs/view/4104765323'
+        'job_url': 'https://www.happening.xyz/careers/4572033101'
     }
-    
+
+    html_tool = ConvertMarkdownToHTMLTool()
+    markdown_content = html_tool.read_markdown_file("resume.md")
+
     try:
         JobApplicationCrew().crew().kickoff(inputs=inputs)
-        # Reopen and re-save the file with the correct UTF-8 encoding
-        with open("resume.md", "r", encoding="utf-8", errors="replace") as f:
-            content = f.read()
+        resume_path = "resume.md"
 
-        # Overwrite the file with clean UTF-8 content
-        with open("resume.md", "w", encoding="utf-8") as f:
-            f.write(content)
+        if markdown_content:
+            try:
+                html_tool.convert_and_save("resume.md", "resume.html")
+
+            except Exception as e:
+                print(f"Error while processing '{resume_path}': {e}")
+        else:
+            print(f"Warning: The file '{resume_path}' was not found.")
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
-    
+
     # Use the backup tool
     backup_tool = BackupMarkdownFilesTool()
     backup_tool.run()
-
-
-def train():
-    """
-    Train the crew for a given number of iterations.
-    """
-    inputs = {
-        "topic": "AI LLMs"
-    }
-    try:
-        JobApplicationCrew().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
-
-    except Exception as e:
-        raise Exception(f"An error occurred while training the crew: {e}")
-
-def replay():
-    """
-    Replay the crew execution from a specific task.
-    """
-    try:
-        JobApplicationCrew().crew().replay(task_id=sys.argv[1])
-
-    except Exception as e:
-        raise Exception(f"An error occurred while replaying the crew: {e}")
-
-def test():
-    """
-    Test the crew execution and returns the results.
-    """
-    inputs = {
-        "topic": "AI LLMs",
-        "current_year": str(datetime.now().year)
-    }
-    try:
-        JobApplicationCrew().crew().test(n_iterations=int(sys.argv[1]), openai_model_name=sys.argv[2], inputs=inputs)
-
-    except Exception as e:
-        raise Exception(f"An error occurred while testing the crew: {e}")

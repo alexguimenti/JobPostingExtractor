@@ -38,14 +38,19 @@ resume_strategy_task:
     qualifications, and skills that are most relevant to the job posting — without adding or fabricating 
     information that does not exist in the candidate’s history.
 
+    IMPORTANT: You must NOT create or assume any fictional experience, project, job title, achievement, company, technology, or certification.
+    Only include content that is explicitly present in `original_resume.md` and `full_profile.md`.
+    If a qualification is missing, DO NOT invent it.
+
     Use the structure and sections from `original_resume.md` as the base, keeping the overall layout and format unchanged.
     However, update the content within each section to better align with the requirements and responsibilities in the job description.
 
     Specific instructions:
     - Use the same language as the job posting (e.g., English or Spanish).
     - Personal and contact information (name, email, phone, LinkedIn, location) must remain **exactly** as written in `original_resume.md`.
+      Specifically, the location line must preserve the original message: 
+      "Location: São Paulo, Brazil, actively pursuing opportunities abroad and open to relocating."
     - Update all other sections — professional summary, work experience, skills, education, and certifications — using verified information only.
-    - Focus on highlighting the candidate’s most relevant experiences according to the job details in `job_research.md`.
     - In the Skills section, reorganize and adapt the list to emphasize skills that directly match the job description.
       Use only real skills from the profile in `full_profile.md`.
     - In the Certifications section, include **between 5 and 10 certifications** that are most relevant to the job posting, 
@@ -54,21 +59,34 @@ resume_strategy_task:
     - In the Education section, include the sentence: "*Recognized as the top university in Latin America*"
     - Ensure proper UTF-8 encoding. Do not include broken characters (e.g., "SÃ£o", "â€“", etc.).
     - Do not alter or remove any sections from `original_resume.md`; only modify the content within them.
-    - Do **not** add fictional experiences, roles, achievements, or qualifications.
+    - Do **not** add fictional experiences, roles, achievements, or qualifications under any circumstance.
 
   expected_output: >
-    A clean, well-formatted, and job-specific resume in UTF-8 text, showcasing the candidate's relevant qualifications 
-    and maximizing alignment with the target role in `job_research.md`, while remaining truthful to the candidate’s verified experience.
+    Return only the final resume content in clean UTF-8 text, with no explanations, summaries, or additional messages.
+    The result must be ready to be saved directly as a `.md` file (resume.md). Do not include "The resume is ready" or similar messages.
 
+  agent: resume_strategist
+
+
+  expected_output: >
+    expected_output: >
+    Return only the final resume content in clean UTF-8 text, with no explanations, summaries, or additional messages.
+    The result must be ready to be saved directly as a `.md` file (resume.md). Do not include "The resume is ready" or similar messages.
+    description: >
+    Return ONLY the final resume content, ready to be saved directly to a file. Do not include any summaries or additional messages.
   agent: resume_strategist
 
 
 cover_letter_strategy_task:
   description: >
-    Using the professional profile and job requirements from previous tasks, tailor the cover letter found in original_cover_letter.md 
-    to emphasize the candidate's most relevant strengths, motivations, and experiences. Follow all structure, tone, and content rules 
-    defined in cover_letter_guide.md. Use original_cover_letter.md as the structural base, maintaining the general flow and logic 
-    while adapting the content to better reflect the alignment with the job opportunity.
+    Using the professional profile and job requirements from previous tasks, CREATE A NEW VERSION of the cover letter based on original_cover_letter.md,
+    rephrasing and adjusting it to better match the target job. Do NOT return the original letter as-is. Your job is to tailor the content using the 
+    structure and flow as a base, but transforming the text to reflect relevance, clarity, and alignment with the job posting.
+
+    Use the content from original_cover_letter.md as a foundation, but ensure that all paragraphs are critically revised and adjusted.
+
+    IMPORTANT: You must NOT invent or create any work experience, role, project, achievement, or technical expertise that is not explicitly stated
+    in `full_profile.md` or `original_cover_letter.md`. Only use real, verifiable information from the candidate's history.
 
     Do not fabricate or invent any information. Only use true, verifiable experiences and motivations from the candidate’s actual profile.
 
@@ -86,13 +104,15 @@ cover_letter_strategy_task:
       "Currently based in Brazil, I am actively seeking relocation opportunities to Europe. Beyond a personal desire to immerse myself in new cultural and professional environments, I believe this transition represents an opportunity for companies like [Company Name] to gain a global perspective from someone experienced in large-scale, data-driven operations across LATAM and the US. I'm eager to bring this international outlook, along with a collaborative mindset and a strong execution focus, to help your team scale with intention and impact."
 
     - The phrasing should be adapted to suit the job’s tone and context, but the core idea must be retained.
-  
+
   expected_output: >
     A polished and job-targeted cover letter in clear, properly encoded text (UTF-8), 
     highlighting the candidate’s strongest qualifications and motivations in alignment with the job posting, 
     and including a thoughtful, value-driven mention of the candidate’s current location in Brazil and interest in relocating to Europe.
 
   agent: cover_strategist
+
+
 
 compensation_analysis_task:
   description: >
