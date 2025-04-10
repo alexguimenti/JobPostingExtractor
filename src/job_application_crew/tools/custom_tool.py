@@ -188,3 +188,68 @@ class BackupMarkdownFilesTool(BaseTool):
                     print(f"Deleted: {file_to_delete}")
                 except Exception as e:
                     print(f"Failed to delete {file_to_delete}: {e}")
+
+class ConvertCoverLetterToHTMLTool(BaseTool):
+    name: str = "convert_cover_letter_to_html"
+    description: str = "Converts a cover letter written in Markdown to a modern, single-page A4 HTML format."
+    args_schema: Type[BaseModel] = MyCustomToolInput
+
+    def read_markdown_file(self, file_path: str) -> str:
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+                    return f.read()
+            except Exception as e:
+                print(f"Error reading file '{file_path}': {e}")
+                return ""
+        else:
+            print(f"Warning: The file '{file_path}' was not found.")
+            return ""
+
+    def save_html_file(self, html_content: str, output_path: str) -> None:
+        try:
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(html_content)
+        except Exception as e:
+            print(f"Error writing HTML file '{output_path}': {e}")
+
+    def convert_and_save(self, markdown_path: str, html_output_path: str) -> None:
+        markdown_content = self.read_markdown_file(markdown_path)
+
+        if markdown_content:
+            html_result = self._run(markdown_content)
+            self.save_html_file(html_result, html_output_path)
+            print(f"HTML successfully saved to '{html_output_path}'")
+        else:
+            print(f"Skipping conversion. Markdown file '{markdown_path}' not found or empty.")
+
+    def _run(self, argument: str) -> str:
+        client = OpenAI(api_key=openai_key)
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """
+You will receive a document in Markdown. Convert it into a single-page A4 HTML.
+
+Instructions:
+
+- Do not alter the cover letter text content.
+- Optimize layout, font size, and spacing to ensure it fits one A4 page.
+- Use a modern, clean, and professional visual style.
+- Maintain strong visual hierarchy (headings, sections).
+- Prioritize readability and efficient space usage.
+"""
+                },
+                {
+                    "role": "user",
+                    "content": argument
+                }
+            ],
+            temperature=0.7,
+            max_tokens=2000
+        )
+
+        return response.choices[0].message.content.strip()

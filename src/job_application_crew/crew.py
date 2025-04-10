@@ -2,18 +2,9 @@ from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai.memory import ShortTermMemory
 from crewai.memory.storage.rag_storage import RAGStorage
-from langchain_openai import ChatOpenAI
+from crewai_tools import FileReadTool, ScrapeWebsiteTool, SerperDevTool
 
-
-from crewai_tools import (
-  FileReadTool,
-  ScrapeWebsiteTool,
-  SerperDevTool
-)
-
-
-#llm=llm(model="ollama/llama3.1:latest", base_url="http://localhost:11434")
-
+# Tools Initialization
 search_tool = SerperDevTool()
 scrape_tool = ScrapeWebsiteTool()
 file_read_tool = FileReadTool(diretory='./')
@@ -24,9 +15,12 @@ read_resume_guide = FileReadTool(file_path='./resume_guide.md')
 # read_cover_letter_guide = FileReadTool(file_path='./cover_letter_guide.md')
 
 
+#llm=llm(model="ollama/llama3.1:latest", base_url="http://localhost:11434")
+
+
 @CrewBase
 class JobApplicationCrew():
-    """JobApplicationCrew crew"""
+    """Defines the Job Application Crew"""
 
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
@@ -156,11 +150,10 @@ class JobApplicationCrew():
         )
 
     
+# CREW DEFINITION
     @crew
     def crew(self) -> Crew:
-        """Creates the JobApplicationCrew crew"""
-
-
+        """Creates and returns the Crew instance"""
         return Crew(
             #agents=self.agents, # Automatically created by the @agent decorator
             #tasks=self.tasks, # Automatically created by the @task decorator
@@ -168,32 +161,30 @@ class JobApplicationCrew():
                 self.researcher(),
                 self.profiler(),
                 self.resume_strategist(),
-                #self.cover_strategist(),
+                # self.cover_strategist(),
                 self.compensation_analyst(),
-                #self.reviewer()
-                ],
+                # self.reviewer()
+            ],
             tasks=[
                 self.job_research_task(),
                 self.profile_task(),
                 self.resume_strategy_task(),
-                #self.cover_letter_strategy_task(),
+                # self.cover_letter_strategy_task(),
                 self.compensation_analysis_task(),
-                #self.final_review_task()
-                ],
+                # self.final_review_task()
+            ],
             process=Process.sequential,
             verbose=True,
             memory=True,
             short_term_memory=ShortTermMemory(
-            storage=RAGStorage(
-                embedder_config={
-                    "provider": "openai",
-                    "config": {
-                        "model": 'text-embedding-3-small'
-                    }
-                },
-                type="short_term",
-                path="/my_crew1/"
+                storage=RAGStorage(
+                    embedder_config={
+                        "provider": "openai",
+                        "config": {"model": 'text-embedding-3-small'}
+                    },
+                    type="short_term",
+                    path="/my_crew1/"
+                )
             )
-        ),
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+            
         )
