@@ -149,8 +149,9 @@ class BackupMarkdownFilesTool(BaseTool):
         # Copy markdown files
         copied_md_files = self._copy_files_by_extension(source, destination, ".md")
 
-        # Copy YAML files (agents.yaml and tasks.yaml)
-        self._copy_yaml_files(source, destination)
+        # Copy YAML files from config folder only
+        config_folder = os.path.join(source, "src", "job_application_crew", "config")
+        self._copy_yaml_files(config_folder, destination)
 
         # Delete only the copied markdown files
         self._delete_source_files(source, copied_md_files)
@@ -158,7 +159,6 @@ class BackupMarkdownFilesTool(BaseTool):
         return f"All .md and config .yaml files have been successfully copied to '{destination}'."
 
     def _extract_company_name(self, filepath: str) -> str:
-        """Extract the company name from job_research.md."""
         try:
             with open(filepath, "r", encoding="utf-8") as f:
                 for line in f:
@@ -174,7 +174,6 @@ class BackupMarkdownFilesTool(BaseTool):
         return None
 
     def _copy_files_by_extension(self, source: str, destination: str, extension: str) -> list:
-        """Copy all files with the given extension from source to destination."""
         copied_files = []
         for file in os.listdir(source):
             if file.endswith(extension):
@@ -185,26 +184,22 @@ class BackupMarkdownFilesTool(BaseTool):
                 print(f"Copied: {file}")
         return copied_files
 
-    def _copy_yaml_files(self, source: str, destination: str) -> None:
-        """Recursively search and copy agents.yaml and tasks.yaml from source to destination."""
-        yaml_files_to_find = ["agents.yaml", "tasks.yaml"]
+    def _copy_yaml_files(self, config_folder: str, destination: str) -> None:
+        """Copy only agents.yaml and tasks.yaml from the config folder to destination."""
+        yaml_files_to_copy = ["agents.yaml", "tasks.yaml"]
 
-        for dirpath, _, filenames in os.walk(source):
-            for filename in filenames:
-                if filename in yaml_files_to_find:
-                    src_file = os.path.join(dirpath, filename)
-                    
-                    # Preserva estrutura de subpastas
-                    relative_path = os.path.relpath(dirpath, source)
-                    dest_dir = os.path.join(destination, relative_path)
-                    os.makedirs(dest_dir, exist_ok=True)
+        if not os.path.exists(config_folder):
+            print(f"Config folder not found: {config_folder}")
+            return
 
-                    dest_file = os.path.join(dest_dir, filename)
-                    shutil.copy2(src_file, dest_file)
-                    print(f"Copied config: {src_file} -> {dest_file}")
+        for file in os.listdir(config_folder):
+            if file in yaml_files_to_copy:
+                src_file = os.path.join(config_folder, file)
+                dest_file = os.path.join(destination, file)
+                shutil.copy2(src_file, dest_file)
+                print(f"Copied config: {src_file} -> {dest_file}")
 
     def _delete_source_files(self, source: str, copied_files: list) -> None:
-        """Delete only specific generated markdown files after backup."""
         files_to_delete = [
             "resume.md",
             "cover_letter.md",
@@ -221,6 +216,7 @@ class BackupMarkdownFilesTool(BaseTool):
                     print(f"Deleted: {file_name}")
                 except Exception as e:
                     print(f"Failed to delete {file_name}: {e}")
+
 
 class ConvertCoverLetterToHTMLTool(BaseTool):
     name: str = "convert_cover_letter_to_html"
