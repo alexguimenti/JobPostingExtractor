@@ -122,9 +122,9 @@ class ConvertMarkdownToHTMLTool(BaseTool):
 
 
 class BackupMarkdownFilesTool(BaseTool):
-    """Tool to backup Markdown files to a specified destination."""
+    """Tool to backup Markdown and YAML config files to a specified destination."""
     name: str = "backup_markdown_files"
-    description: str = "Backup markdown files to a specified destination and clean up source files"
+    description: str = "Backup markdown and config files to a specified destination and clean up markdown source files"
 
     def _run(self, source: str = None, destination_base: str = None, job_research_filename: str = "job_research.md") -> str:
         source = source or "C:\\Users\\alexg\\Documents\\crewai\\job_application_crew"
@@ -146,10 +146,16 @@ class BackupMarkdownFilesTool(BaseTool):
         if not os.path.exists(source):
             return f"Error: Source directory does not exist: {source}"
 
-        copied_files = self._copy_markdown_files(source, destination)
-        self._delete_source_files(source, copied_files)
+        # Copy markdown files
+        copied_md_files = self._copy_files_by_extension(source, destination, ".md")
 
-        return f"All .md files have been successfully copied to '{destination}'."
+        # Copy YAML files (agents.yaml and tasks.yaml)
+        self._copy_yaml_files(source, destination)
+
+        # Delete only the copied markdown files
+        self._delete_source_files(source, copied_md_files)
+
+        return f"All .md and config .yaml files have been successfully copied to '{destination}'."
 
     def _extract_company_name(self, filepath: str) -> str:
         """Extract the company name from job_research.md."""
@@ -167,27 +173,54 @@ class BackupMarkdownFilesTool(BaseTool):
             print(f"File not found: {filepath}")
         return None
 
-    def _copy_markdown_files(self, source: str, destination: str) -> list:
-        """Copy all .md files from source to destination."""
+    def _copy_files_by_extension(self, source: str, destination: str, extension: str) -> list:
+        """Copy all files with the given extension from source to destination."""
         copied_files = []
         for file in os.listdir(source):
-            if file.endswith(".md"):
-                shutil.copy2(os.path.join(source, file), os.path.join(destination, file))
+            if file.endswith(extension):
+                src_file = os.path.join(source, file)
+                dest_file = os.path.join(destination, file)
+                shutil.copy2(src_file, dest_file)
                 copied_files.append(file)
                 print(f"Copied: {file}")
         return copied_files
 
-    def _delete_source_files(self, source: str, copied_files: list) -> None:
-        """Delete specific .md files from source after backup."""
-        files_to_delete = ["resume.md", "cover_letter.md", "job_research.md", "profile.md", "salary.md", "final_review.md"]
+    def _copy_yaml_files(self, source: str, destination: str) -> None:
+        """Recursively search and copy agents.yaml and tasks.yaml from source to destination."""
+        yaml_files_to_find = ["agents.yaml", "tasks.yaml"]
 
-        for file_to_delete in files_to_delete:
-            if file_to_delete in copied_files:
+        for dirpath, _, filenames in os.walk(source):
+            for filename in filenames:
+                if filename in yaml_files_to_find:
+                    src_file = os.path.join(dirpath, filename)
+                    
+                    # Preserva estrutura de subpastas
+                    relative_path = os.path.relpath(dirpath, source)
+                    dest_dir = os.path.join(destination, relative_path)
+                    os.makedirs(dest_dir, exist_ok=True)
+
+                    dest_file = os.path.join(dest_dir, filename)
+                    shutil.copy2(src_file, dest_file)
+                    print(f"Copied config: {src_file} -> {dest_file}")
+
+    def _delete_source_files(self, source: str, copied_files: list) -> None:
+        """Delete only specific generated markdown files after backup."""
+        files_to_delete = [
+            "resume.md",
+            "cover_letter.md",
+            "job_research.md",
+            "profile.md",
+            "salary.md",
+            "final_review.md"
+        ]
+
+        for file_name in copied_files:
+            if file_name in files_to_delete:
                 try:
-                    os.remove(os.path.join(source, file_to_delete))
-                    print(f"Deleted: {file_to_delete}")
+                    os.remove(os.path.join(source, file_name))
+                    print(f"Deleted: {file_name}")
                 except Exception as e:
-                    print(f"Failed to delete {file_to_delete}: {e}")
+                    print(f"Failed to delete {file_name}: {e}")
 
 class ConvertCoverLetterToHTMLTool(BaseTool):
     name: str = "convert_cover_letter_to_html"

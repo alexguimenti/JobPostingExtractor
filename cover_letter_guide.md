@@ -70,3 +70,5 @@
    * Improved, Increased, Enhanced
    * Analyzed, Evaluated, Resolved
    * Implemented, Launched, Delivered 
+
+Never leave placeholders (like [Date], [Company Name], [Hiring Manager's Name]) in the final output. If you do not have this information, remove the line or rephrase the sentence gracefully.

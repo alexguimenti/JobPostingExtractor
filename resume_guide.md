@@ -4,11 +4,13 @@
 
 1. **Personal Information**
    * Full name
-   * Contact details (phone, email)
+   * Contact details (email)
    * LinkedIn profile link  
    * _Present all information on a single line to save space._  
      **Example:**  
-     `Name | City, Country | Phone | Email | LinkedIn`
+     `Name | City, Country | Email | LinkedIn`
+     Location: São Paulo, Brazil, actively pursuing opportunities abroad and open to relocating. | Email: alexguimenti@gmail.com | LinkedIn: [linkedin.com/in/alexandre-guimenti](https://linkedin.com/in/alexandre-guimenti)
+
 
 2. **Professional Summary**
    * Brief paragraph (3–5 lines) highlighting your qualifications, key experiences, and professional goals

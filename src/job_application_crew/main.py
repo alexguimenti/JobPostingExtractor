@@ -32,7 +32,7 @@ def run():
     """
 
     inputs = {
-        'job_url': 'https://www.happening.xyz/careers/4461918101'
+        'job_url':'https://www.linkedin.com/jobs/view/4207850019'
     }
 
     crew = JobApplicationCrew()

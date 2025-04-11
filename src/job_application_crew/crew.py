@@ -1,18 +1,23 @@
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from crewai.memory import ShortTermMemory
-from crewai.memory.storage.rag_storage import RAGStorage
-from crewai_tools import FileReadTool, ScrapeWebsiteTool, SerperDevTool
+from crewai_tools import FileReadTool, ScrapeWebsiteTool, SerperDevTool, MDXSearchTool
 
 # Tools Initialization
 search_tool = SerperDevTool()
 scrape_tool = ScrapeWebsiteTool()
 file_read_tool = FileReadTool(diretory='./')
+
+# File Readers
 read_full_profile = FileReadTool(file_path='./full_profile.md')
 read_resume = FileReadTool(file_path='./original_resume.md')
 read_resume_guide = FileReadTool(file_path='./resume_guide.md')
-# read_cover_letter = FileReadTool(file_path='./original_cover_letter.md')
-# read_cover_letter_guide = FileReadTool(file_path='./cover_letter_guide.md')
+read_cover_letter_guide = FileReadTool(file_path='./cover_letter_guide.md')
+
+# Semantic Search
+semantic_search_full_profile = MDXSearchTool(mdx='./full_profile.md')
+semantic_search_original_resume = MDXSearchTool(mdx='./original_resume.md')
+semantic_search_resume_guide = MDXSearchTool(mdx='./resume_guide.md')
+semantic_search_cover_letter_guide = MDXSearchTool(mdx='./cover_letter_guide.md')
 
 
 #llm=llm(model="ollama/llama3.1:latest", base_url="http://localhost:11434")
@@ -39,7 +44,7 @@ class JobApplicationCrew():
     def profiler(self) -> Agent:
         return Agent(
             config=self.agents_config['profiler'],
-            tools=[search_tool, scrape_tool, file_read_tool],
+            tools=[search_tool, scrape_tool, file_read_tool, read_full_profile, semantic_search_full_profile],
             allow_delegation=False,
             #llm=llm,
             verbose=True,
@@ -49,8 +54,16 @@ class JobApplicationCrew():
     def resume_strategist(self) -> Agent:
         return Agent(
             config=self.agents_config['resume_strategist'],
-            tools=[file_read_tool, read_full_profile, read_resume, read_resume_guide],
-            allow_delegation=False,
+            tools=[
+                file_read_tool,
+                read_full_profile,
+                read_resume,
+                read_resume_guide,
+                semantic_search_full_profile,
+                semantic_search_original_resume,
+                semantic_search_resume_guide
+            ],
+            allow_delegation=True,
             #llm=llm,
             verbose=True
         )
@@ -59,8 +72,12 @@ class JobApplicationCrew():
     def cover_strategist(self) -> Agent:
         return Agent(
             config=self.agents_config['cover_strategist'],
-            tools=[file_read_tool],
-            allow_delegation=False,
+            tools=[
+                file_read_tool,
+                read_cover_letter_guide,
+                semantic_search_cover_letter_guide
+            ],
+            allow_delegation=True,
             #llm=llm,
             verbose=True
         )
@@ -105,7 +122,8 @@ class JobApplicationCrew():
         return Task(
             config=self.tasks_config['resume_strategy_task'],
             output_file='resume.md',
-            async_execution=True,
+            #async_execution=True,
+            #context=['job_research_task', 'profile_task']
             #depends_on=['profile_task'] 
         )
     
@@ -114,6 +132,7 @@ class JobApplicationCrew():
         return Task(
             config=self.tasks_config['cover_letter_strategy_task'],
             output_file='cover_letter.md',
+            #context=['job_research_task', 'profile_task']
             #async_execution=True,
             #depends_on=['profile_task'] 
         )
@@ -161,7 +180,7 @@ class JobApplicationCrew():
                 self.researcher(),
                 self.profiler(),
                 self.resume_strategist(),
-                # self.cover_strategist(),
+                self.cover_strategist(),
                 self.compensation_analyst(),
                 # self.reviewer()
             ],
@@ -169,22 +188,22 @@ class JobApplicationCrew():
                 self.job_research_task(),
                 self.profile_task(),
                 self.resume_strategy_task(),
-                # self.cover_letter_strategy_task(),
+                self.cover_letter_strategy_task(),
                 self.compensation_analysis_task(),
                 # self.final_review_task()
             ],
             process=Process.sequential,
             verbose=True,
-            memory=True,
-            short_term_memory=ShortTermMemory(
-                storage=RAGStorage(
-                    embedder_config={
-                        "provider": "openai",
-                        "config": {"model": 'text-embedding-3-small'}
-                    },
-                    type="short_term",
-                    path="/my_crew1/"
-                )
-            )
+            # memory=True,
+            # short_term_memory=ShortTermMemory(
+            #     storage=RAGStorage(
+            #         embedder_config={
+            #             "provider": "openai",
+            #             "config": {"model": 'text-embedding-3-small'}
+            #         },
+            #         type="short_term",
+            #         path="/my_crew1/"
+            #     )
+            # )
             
         )
