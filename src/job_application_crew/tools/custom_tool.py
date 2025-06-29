@@ -127,8 +127,9 @@ class BackupMarkdownFilesTool(BaseTool):
     description: str = "Backup markdown and config files to a specified destination and clean up markdown source files"
 
     def _run(self, source: str = None, destination_base: str = None, job_research_filename: str = "job_research.md") -> str:
-        source = source or "C:\\Users\\alexg\\Documents\\crewai\\job_application_crew"
-        destination_base = destination_base or "D:\\Documents\\Jobs Application"
+        source = r"C:\Users\alexg\Documents\Projects\job_application_crew"
+        destination_base = r"C:\Users\alexg\OneDrive\Pessoal\Jobs Application"
+
 
         print(f"Source directory: {source}")
         print(f"Destination base: {destination_base}")

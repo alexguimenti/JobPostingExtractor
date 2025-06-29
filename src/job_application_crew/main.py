@@ -32,7 +32,7 @@ def run():
     """
 
     inputs = {
-        'job_url':'https://www.linkedin.com/jobs/view/4206000163'
+        'job_url':'https://walkerdunlop.wd1.myworkdayjobs.com/wd/job/remote---netherlands/product-manager_req-1506'
     }
 
     crew = JobApplicationCrew()
@@ -62,8 +62,8 @@ def run():
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
-    #print("Running Backup...")
-    #backup_tool.run()
+    print("Running Backup...")
+    backup_tool.run()
 
 
 if __name__ == "__main__":

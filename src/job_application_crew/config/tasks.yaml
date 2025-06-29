@@ -79,17 +79,20 @@ cover_letter_strategy_task:
     - The recommended structure, tone, style, and best practices clearly defined in `cover_letter_guide.md`.
 
     Key Rules:
-    - The letter must be fully customized and aligned with the specific company and job opportunity described in `job_research.md`.
+    - The letter must be fully customized and aligned with the specific company and remote job opportunity described in `job_research.md`.
     - The writing style must strictly follow the guidelines from `cover_letter_guide.md`.
     - NEVER invent or create any information — only use verified content from `full_profile.md`.
-    - REMOVE ALL PLACEHOLDERS (like [Date], [Company Name], [Hiring Manager's Name], [Company Address], etc.). 
+    - REMOVE ALL PLACEHOLDERS (like [Date], [Company Name], [Hiring Manager's Name], [Company Address], etc.).
       If any required data is missing, remove the section or adjust the sentence gracefully — but never leave placeholders.
+    - Under no circumstances should the final cover letter contain any placeholders such as [Date], [Company Name], [Hiring Manager's Name], [Company Address], etc.
+    - If any of these details are missing from the provided data, REMOVE the entire line or section gracefully. For example, if the hiring manager's name is not available, start the letter with "Dear Hiring Team," or simply "Dear Team,".
+    - Never output any square brackets or placeholder text in the final result.
 
     Mandatory Content:
     - At the beginning of the cover letter (after the name), always include this line exactly as written:
-      "Location: São Paulo, Brazil, actively pursuing opportunities abroad and open to relocating."
+      "Location: São Paulo, Brazil, actively pursuing remote opportunities with international companies."
 
-    - Include a paragraph explaining the candidate is based in Brazil and seeking relocation to Europe — highlighting how their international experience (LATAM, US) adds value to the company.
+    - Include a paragraph explaining the candidate is based in Brazil and seeking to contribute remotely to global teams — highlighting how their international experience (LATAM, US) and cross-cultural collaboration add value to distributed organizations.
 
     Technical Requirements:
     - Use the same language as the job posting (English or Spanish).
@@ -102,6 +105,7 @@ cover_letter_strategy_task:
     Do NOT include explanations, summaries, comments, or any extra messages.
     Output ONLY the final content of the new cover letter — fully formatted, professional, and ready to use.
   agent: cover_strategist
+
 
 compensation_analysis_task:
   description: >
