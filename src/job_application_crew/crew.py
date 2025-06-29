@@ -2,6 +2,18 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import FileReadTool, ScrapeWebsiteTool, SerperDevTool, MDXSearchTool
 from job_application_crew.utils.custom_callbacks import TokenCountingCallback 
+import os
+
+
+from crewai import LLM
+
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+
+gemini_llm = LLM(
+    model='gemini/gemini-2.5-pro',
+    api_key=gemini_api_key,
+    temperature=0.5  # Lower temperature for more consistent results.
+)
 
 # Tools Initialization
 search_tool = SerperDevTool()
@@ -15,13 +27,12 @@ read_resume_guide = FileReadTool(file_path='./resume_guide.md')
 read_cover_letter_guide = FileReadTool(file_path='./cover_letter_guide.md')
 
 # Semantic Search
-semantic_search_full_profile = MDXSearchTool(mdx='./full_profile.md')
-semantic_search_original_resume = MDXSearchTool(mdx='./original_resume.md')
-semantic_search_resume_guide = MDXSearchTool(mdx='./resume_guide.md')
-semantic_search_cover_letter_guide = MDXSearchTool(mdx='./cover_letter_guide.md')
+#semantic_search_full_profile = MDXSearchTool(mdx='./full_profile.md')
+#semantic_search_original_resume = MDXSearchTool(mdx='./original_resume.md')
+#semantic_search_resume_guide = MDXSearchTool(mdx='./resume_guide.md')
+#semantic_search_cover_letter_guide = MDXSearchTool(mdx='./cover_letter_guide.md')
 
 
-#llm=llm(model="ollama/llama3.1:latest", base_url="http://localhost:11434")
 
 
 @CrewBase
@@ -40,7 +51,6 @@ class JobApplicationCrew():
                 scrape_tool
                 ],
             allow_delegation=False,
-            #llm=llm,
             verbose=True
         )
 
@@ -54,7 +64,6 @@ class JobApplicationCrew():
                 #semantic_search_full_profile
                 ],
             allow_delegation=False,
-            #llm=llm,
             verbose=True,
         )
     
@@ -63,7 +72,6 @@ class JobApplicationCrew():
         return Agent(
             config=self.agents_config['evaluator'],
             allow_delegation=False, # Evaluator should not delegate this crucial task
-            # llm=llm, # Uncomment if using a custom LLM
             verbose=True
         )
     
@@ -81,7 +89,6 @@ class JobApplicationCrew():
                 #semantic_search_resume_guide
             ],
             allow_delegation=True,
-            #llm=llm,
             verbose=True
         )
 
@@ -95,7 +102,6 @@ class JobApplicationCrew():
                 #semantic_search_cover_letter_guide
             ],
             allow_delegation=True,
-            #llm=llm,
             verbose=True
         )
     
@@ -107,7 +113,6 @@ class JobApplicationCrew():
                 #file_read_tool
             ],
             allow_delegation=False,
-            #llm=llm,
             verbose=True
         )
 
@@ -117,7 +122,6 @@ class JobApplicationCrew():
             config=self.agents_config['reviewer'],
             tools=[search_tool, scrape_tool, file_read_tool],
             allow_delegation=False,
-            #llm=llm,
             verbose=True
         )
 
@@ -226,7 +230,8 @@ class JobApplicationCrew():
             process=Process.sequential,
             verbose=True,
             # Adicione o callback à lista de callbacks da Crew
-            callbacks=[token_callback]
+            callbacks=[token_callback],
+            llm=gemini_llm
             # memory=True, # Descomente se for usar memória
             # short_term_memory=ShortTermMemory(
             #     storage=RAGStorage(
