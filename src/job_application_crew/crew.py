@@ -1,6 +1,7 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import FileReadTool, ScrapeWebsiteTool, SerperDevTool, MDXSearchTool
+from job_application_crew.utils.custom_callbacks import TokenCountingCallback 
 
 # Tools Initialization
 search_tool = SerperDevTool()
@@ -34,7 +35,10 @@ class JobApplicationCrew():
     def researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['researcher'],
-            tools=[search_tool, scrape_tool],
+            tools=[
+                #search_tool, 
+                scrape_tool
+                ],
             allow_delegation=False,
             #llm=llm,
             verbose=True
@@ -44,10 +48,23 @@ class JobApplicationCrew():
     def profiler(self) -> Agent:
         return Agent(
             config=self.agents_config['profiler'],
-            tools=[search_tool, scrape_tool, file_read_tool, read_full_profile, semantic_search_full_profile],
+            tools=[
+                #file_read_tool, 
+                read_full_profile, 
+                #semantic_search_full_profile
+                ],
             allow_delegation=False,
             #llm=llm,
             verbose=True,
+        )
+    
+    @agent
+    def evaluator(self) -> Agent:
+        return Agent(
+            config=self.agents_config['evaluator'],
+            allow_delegation=False, # Evaluator should not delegate this crucial task
+            # llm=llm, # Uncomment if using a custom LLM
+            verbose=True
         )
     
     @agent
@@ -55,13 +72,13 @@ class JobApplicationCrew():
         return Agent(
             config=self.agents_config['resume_strategist'],
             tools=[
-                file_read_tool,
+                #file_read_tool,
                 read_full_profile,
                 read_resume,
                 read_resume_guide,
-                semantic_search_full_profile,
-                semantic_search_original_resume,
-                semantic_search_resume_guide
+                #semantic_search_full_profile,
+                #semantic_search_original_resume,
+                #semantic_search_resume_guide
             ],
             allow_delegation=True,
             #llm=llm,
@@ -73,9 +90,9 @@ class JobApplicationCrew():
         return Agent(
             config=self.agents_config['cover_strategist'],
             tools=[
-                file_read_tool,
+                #file_read_tool,
                 read_cover_letter_guide,
-                semantic_search_cover_letter_guide
+                #semantic_search_cover_letter_guide
             ],
             allow_delegation=True,
             #llm=llm,
@@ -86,7 +103,9 @@ class JobApplicationCrew():
     def compensation_analyst(self) -> Agent:
         return Agent(
             config=self.agents_config['compensation_analyst'],
-            tools=[file_read_tool],
+            tools=[
+                #file_read_tool
+            ],
             allow_delegation=False,
             #llm=llm,
             verbose=True
@@ -117,6 +136,15 @@ class JobApplicationCrew():
             output_file='profile.md'
         )
     
+    @task
+    def evaluate_profile_fit_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['evaluate_profile_fit_task'],
+            # This task depends on the output of job_research_task and profile_task
+            context=[self.job_research_task(), self.profile_task()],
+            output_file='profile_fit_evaluation.md'
+        )
+
     @task
     def resume_strategy_task(self) -> Task:
         return Task(
@@ -173,28 +201,33 @@ class JobApplicationCrew():
     @crew
     def crew(self) -> Crew:
         """Creates and returns the Crew instance"""
+        # Crie uma instância do seu callback de contagem de tokens
+        token_callback = TokenCountingCallback()
+
         return Crew(
-            #agents=self.agents, # Automatically created by the @agent decorator
-            #tasks=self.tasks, # Automatically created by the @task decorator
             agents=[
                 self.researcher(),
                 self.profiler(),
+                self.evaluator(), # Está comentado na sua lista, se quiser usar, descomente
                 self.resume_strategist(),
                 self.cover_strategist(),
                 self.compensation_analyst(),
-                # self.reviewer()
+                self.reviewer() # Está comentado na sua lista, se quiser usar, descomente
             ],
             tasks=[
                 self.job_research_task(),
                 self.profile_task(),
+                self.evaluate_profile_fit_task(), # Está comentado na sua lista, se quiser usar, descomente
                 self.resume_strategy_task(),
                 self.cover_letter_strategy_task(),
                 self.compensation_analysis_task(),
-                # self.final_review_task()
+                self.final_review_task() # Está comentado na sua lista, se quiser usar, descomente
             ],
             process=Process.sequential,
             verbose=True,
-            # memory=True,
+            # Adicione o callback à lista de callbacks da Crew
+            callbacks=[token_callback]
+            # memory=True, # Descomente se for usar memória
             # short_term_memory=ShortTermMemory(
             #     storage=RAGStorage(
             #         embedder_config={
@@ -205,5 +238,4 @@ class JobApplicationCrew():
             #         path="/my_crew1/"
             #     )
             # )
-            
         )

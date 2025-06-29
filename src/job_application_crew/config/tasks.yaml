@@ -28,6 +28,22 @@ profile_task:
     5. Educational background and certifications
   agent: profiler
 
+evaluate_profile_fit_task:
+  description: >
+    Based on the detailed job analysis and the candidate's professional profile analysis,
+    evaluate how well the professional's skills, experience, and background match the job requirements.
+    Provide a concise fit score from 1 to 5, where 1 is a poor match and 5 is an excellent match.
+    Also, provide a brief, actionable explanation for the score, highlighting the main strengths
+    that align with the job and any significant gaps or areas for improvement.
+  expected_output: >
+    A clear assessment of the profile-to-job fit, structured as follows:
+    - **Fit Score (1-5):** [Your numerical score, e.g., 4]
+    - **Explanation:** [A concise, bullet-point explanation (max 3-4 points) detailing the key reasons
+                      for this score. Focus on direct matches and critical mismatches between the
+                      profile and the job requirements, suggesting concrete areas for resume/cover letter
+                      tailoring or skill development.]
+  agent: evaluator
+
 resume_strategy_task:
   description: >
     Tailor the resume from `original_resume.md` to match the target job opportunity described in `job_research.md`, 
@@ -117,11 +133,11 @@ compensation_analysis_task:
     to reflect what is typical for similar organizations in that region.
 
     Specific instructions:
-    - Present the result as a total annual compensation range in euros (EUR).
+    - Present the result as a total annual compensation range in euros (EUR) or dollars (USD).
     - Keep the explanation minimal and avoid excessive details about the company or market context.
     - Use this output template:
 
-      "Based on my research and the responsibilities of the role, I believe a fair salary range would be between €[lower bound] and €[upper bound] per year.
+      "Based on my research and the responsibilities of the role, I believe a fair salary range would be between [lower bound] and [upper bound] per year.
 
       That said, I'm flexible and open to discussing this further depending on the full compensation package, responsibilities, and opportunities for growth. 
       My main goal is to find a role where I can bring value to the team and continue developing professionally."
