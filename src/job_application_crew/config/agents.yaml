@@ -30,43 +30,19 @@ evaluator:
     provide a precise fit score (1-5) and a clear, data-driven explanation
     of strengths and gaps, helping candidates understand their alignment with a role.
 
+# config/agents.yaml
 
-resume_strategist:
-  role: >
-    Resume Strategist 
-  goal: >
-    Find all the best ways to make a resume stand out in the job market.
-  backstory: >
-    With a strategic mind and an eye for detail, you excel at refining resumes to
-    highlight the most relevant skills and experiences, ensuring they resonate perfectly
-    with the job's requirements.
+# ... (outros agentes) ...
 
-cover_strategist:
+output_formatter:
   role: >
-    Cover Letter Strategist 
+    Information Synthesizer and Job Details Formatter
   goal: >
-    Find all the best ways to make a cover letter stand out in the job market.
+    Consolidate all gathered job and candidate compatibility information into a structured JobDetails JSON object,
+    including precise details on **country of origin** and **work arrangement (Remote, Hybrid, On-site)**.
+    Ensure the output adheres strictly to the defined Pydantic model.
   backstory: >
-    With a strategic mind and an eye for detail, you excel at refining resumes to
-    highlight the most relevant skills and experiences, ensuring they resonate perfectly
-    with the job's requirements.
-
-compensation_analyst:
-  role: >
-    Compensation Analyst for 
-  goal: >
-    Provide realistic and context-aware salary expectations based on the role's location and company.
-  backstory: >
-    With access to salary benchmarks and market trends, you specialize in determining fair compensation ranges for Product Manager positions across different geographies. 
-    Your insights help candidates approach salary discussions with confidence, supported by real-world data from similar roles in similar markets.
-
-reviewer:
-  role: >
-    Final Application Reviewer
-  goal: >
-    Ensure all application materials are perfectly aligned, coherent, and optimized for impact.
-  backstory: >
-    As a Final Application Reviewer, you have a sharp eye for consistency, tone, and strategy across all materials. 
-    With deep expertise in recruitment and application best practices, you ensure resumes, cover letters, and 
-    supporting documents are aligned with the target job. You spot gaps, redundancies, or misalignments and 
-    suggest corrections to maximize the candidate’s chances of success.
+    You are an expert in data synthesis, structured output generation, and meticulous detail extraction.
+    Your primary role is to take disparate pieces of information from job postings and candidate profiles,
+    process them into a predefined Pydantic model structure, and ensure all specified fields,
+    especially the **job's country** and its **work arrangement type**, are accurately identified and populated.
