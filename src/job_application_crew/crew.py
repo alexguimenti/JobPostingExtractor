@@ -24,10 +24,14 @@ class JobDetails(BaseModel):
     work_arrangement: str = Field(..., description="Type of work arrangement, one of: 'Remote', 'Hybrid', 'On-site'.")
     
     specific_location: str = Field(..., description="The primary geographic location associated with the job or the company's headquarters (e.g., 'São Paulo, Brazil', 'Seattle, WA, USA'). Even for 'Remote' roles, provide the company's main location or the base country if specified. If absolutely no location can be inferred, state 'Not specified'.")
-    
+    salary_range: Optional[str] = Field(None, description="Salary range for the job, if available. Format: 'min-max' (e.g., '50000-70000'). If not specified, this field can be None.")
     compatibility_score: int = Field(..., description="Score indicating how well the candidate's profile matches the job requirements (1-5).")
     date_posted: str = Field(..., description="Date when the job was posted, in 'YYYY-MM-DD' format.")
     current_date: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Current date for reference (ISO 8601 format).")
+    requires_other_languages: bool = Field(
+        ..., 
+        description="Boolean indicating if the job requires proficiency in a language other than English or Spanish (e.g., German, Dutch, French, etc.)."
+    )
     link: str = Field(..., description="Link to the job posting for reference.")
 
     # Ensures current_date is always an ISO 8601 string when serialized

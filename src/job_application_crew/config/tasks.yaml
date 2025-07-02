@@ -13,6 +13,7 @@ job_research_task:
     - Country
     - Company brief description
     - Technical skills required
+    - languages required
     - Experience requirements
     - Key responsibilities
     - Any unique or standout requirements
